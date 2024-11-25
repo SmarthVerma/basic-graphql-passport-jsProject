@@ -21,7 +21,7 @@ enum Role {
 
 // User model with a role field
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String      @id @default(uuid())
   email     String   @unique
   password  String
   role      Role     @default(USER) // default to USER role
