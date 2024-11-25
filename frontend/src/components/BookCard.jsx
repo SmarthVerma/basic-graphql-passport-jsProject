@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useNavigate } from 'react-router-dom';
 
-function BookCard({ data }) {
+export const BookCard = ({ data }) => {
     const { roomNumber, status, location } = data;
-    const authenticated = false; // Assume this value comes dynamically from context or state
+    const authenticated = true; // Assume this value comes dynamically from context or state
     const navigate = useNavigate();
 
     // Handle booking button click
@@ -30,4 +30,3 @@ function BookCard({ data }) {
     );
 }
 
-export default BookCard;

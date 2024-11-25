@@ -21,7 +21,7 @@ enum Role {
 
 // User model with a role field
 model User {
-  id        String      @id @default(uuid())
+  id        String   @id @default(uuid())
   email     String   @unique
   password  String
   role      Role     @default(USER) // default to USER role
@@ -31,31 +31,19 @@ model User {
 
 // Room model with availability logic
 model Room {
-  id        Int       @id @default(autoincrement())
-  name      String
-  available Boolean   @default(true) // Whether the room is available or not
-  bookings  Booking[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         Int      @id @default(autoincrement())
+  roomNumber String
+  location   String   @default("Parmar")
+  status     String   @default("Available") // Whether the room is available or not
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
-
-// Booking model to store room availability with dates
-model Booking {
-  id        Int      @id @default(autoincrement())
-  roomId    Int
-  room      Room     @relation(fields: [roomId], references: [id])
-  startDate DateTime
-  endDate   DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 
 model Session {
-  id        Int      @id @default(autoincrement()) // Unique session ID
-  sid       String   @unique // Session ID (from Passport.js)
+  id        Int       @id @default(autoincrement()) // Unique session ID
+  sid       String    @unique // Session ID (from Passport.js)
   sess      Json // Serialized session data (user information, etc.)
   expire    DateTime // Expiration time for session
-  createdAt DateTime @default(now()) // Creation time
+  createdAt DateTime  @default(now()) // Creation time
   updatedAt DateTime? @updatedAt // Last update time
 }

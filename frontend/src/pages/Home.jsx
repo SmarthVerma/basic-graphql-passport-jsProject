@@ -1,5 +1,5 @@
 
-import BookCard from "../components/BookCard";
+import { BookCard } from "../components/";
 import { Rooms } from "../dummy";
 export const Home = () => {
     const limitedRooms = Rooms.slice(0, 3);
