@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Define the roles using an enum
+enum Role {
+  ADMIN
+  USER
+}
+
+// User model with a role field
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      Role     @default(USER) // default to USER role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Room model with availability logic
+model Room {
+  id        Int       @id @default(autoincrement())
+  name      String
+  available Boolean   @default(true) // Whether the room is available or not
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// Booking model to store room availability with dates
+model Booking {
+  id        Int      @id @default(autoincrement())
+  roomId    Int
+  room      Room     @relation(fields: [roomId], references: [id])
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Session {
+  id        Int      @id @default(autoincrement()) // Unique session ID
+  sid       String   @unique // Session ID (from Passport.js)
+  sess      Json // Serialized session data (user information, etc.)
+  expire    DateTime // Expiration time for session
+  createdAt DateTime @default(now()) // Creation time
+  updatedAt DateTime? @updatedAt // Last update time
+}
