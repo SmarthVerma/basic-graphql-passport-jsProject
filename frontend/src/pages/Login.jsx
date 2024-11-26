@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMutation } from "@apollo/client";
+import { LOGIN_USER } from "../graphql/mutations";
+import { useNavigate } from "react-router-dom"; // Use react-router-dom for navigation
+import { GET_AUTH_USER } from "../graphql/query";
 
 // Define Zod schema for validation
 const loginSchema = z.object({
@@ -10,20 +14,32 @@ const loginSchema = z.object({
 });
 
 export const Login = () => {
+  const navigate = useNavigate(); // Initialize navigate
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema),
   });
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const onSubmit = async (data) => {
+  // Use mutation with proper options
+  const [login, { loading }] = useMutation(LOGIN_USER.mutation, {
+    refetchQueries: [GET_AUTH_USER],
+    onCompleted: (data) => {
+      if (data?.login) {
+        setErrorMessage(""); // Clear errors
+        navigate("/dashboard"); // Navigate to dashboard
+      }
+    },
+    onError: (error) => {
+      setErrorMessage(error.message || "An error occurred during login.");
+    },
+  });
+
+  const onSubmit = async (formData) => {
     try {
-      // Handle form submission (integrate with backend logic)
-      console.log("Form Data:", data);
-      setErrorMessage(""); // Reset error message after successful submit
-      // Call API for login (Example: Auth API call)
-    } catch (error) {
-      setErrorMessage("An error occurred during login.", error.message);
+      await login({ variables: formData });
+    } catch {
+      // Errors are handled in onError
     }
   };
 
@@ -32,6 +48,7 @@ export const Login = () => {
       <div className="bg-white p-8 rounded-lg shadow-xl w-96 transform transition-all duration-300 hover:scale-105">
         <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Welcome Back</h2>
 
+        {/* Error message */}
         {errorMessage && (
           <div className="bg-red-100 text-red-600 p-2 mb-4 rounded-md text-center">
             {errorMessage}
@@ -72,9 +89,11 @@ export const Login = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none"
+            className={`w-full py-2 px-4 font-semibold rounded-md transition duration-200 focus:outline-none ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"
+              }`}
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 

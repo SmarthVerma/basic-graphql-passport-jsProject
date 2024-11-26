@@ -12,7 +12,7 @@ export const Dashboard = () => {
                 {Rooms.map((room) => (
                     <div key={room.id}>
                         <BookCard data={room} />
-                    </div>
+                    </div> 
                 ))}
             </div>
         </div>

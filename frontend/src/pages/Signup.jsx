@@ -1,7 +1,11 @@
+'use client'
 import { useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
+import { SIGNUP_USER } from "../graphql/mutations";
 
 // Define Zod schema for validation
 const registerSchema = z.object({
@@ -12,17 +16,23 @@ const registerSchema = z.object({
 
 export const Signup = () => {
     const [isAdmin, setIsAdmin] = useState(false);
+    const navigate = useNavigate();
+
+    // React Hook Form setup
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(registerSchema),
     });
 
+    // Apollo Mutation
+    const [signup, { loading, error }] = useMutation(SIGNUP_USER);
+
     // Handle form submission
     const onSubmit = async (data) => {
         try {
-            // Handle registration logic here
-            console.log({ data })
-        } catch (error) {
-            console.error(error);
+            await signup({ variables: data });
+            navigate('/login'); // Redirect to login after successful signup
+        } catch (err) {
+            console.error('Signup error:', err);
         }
     };
 
@@ -88,10 +98,14 @@ export const Signup = () => {
                     {/* Submit Button */}
                     <button
                         type="submit"
+                        disabled={loading}
                         className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none"
                     >
-                        Register
+                        {loading ? 'Registering...' : 'Register'}
                     </button>
+
+                    {/* Mutation Error */}
+                    {error && <p className="text-red-500 text-sm mt-4">{error.message}</p>}
                 </form>
 
                 {/* Link to Login */}

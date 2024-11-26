@@ -30,23 +30,25 @@ type Booking {
 # Room Types
 type Room {
   id: Int!
-  name: String!
-  available: Boolean!
-  createdAt: String!
+  roomNumber: String!
+  location: String!
+  status: String!
+  createdAt: String! # Use ISO 8601 format for DateTime fields
   updatedAt: String!
 }
-
 # Queries
 type Query {
   getAuthUser: User
   getUser(id: Int!): User
   getAllBookings: [Booking]
   getRoom(id: Int!): Room
+    getAllRooms: [Room!]!
+
 }
 
 # Mutations
 type Mutation {
-  signup(email: String!, password: String!): User
+  signup(email: String!, password: String!, role:String!): User
   login(email: String!, password: String!): User
   logout: Boolean
   createBooking(roomId: Int!, startDate: String!, endDate: String!): Booking

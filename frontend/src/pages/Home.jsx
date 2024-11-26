@@ -8,13 +8,18 @@ export const Home = () => {
     return (
         <div className="min-h-screen w-full border border-red-700 bg-gray-50">
             {/* Header */}
-            <header className="bg-blue-600 text-white py-6">
-                <div className="container mx-auto text-center">
-                    <h1 className="text-4xl font-bold">Hostel Room Booking</h1>
+            <header
+                className="relative bg-cover bg-center text-white py-6"
+                style={{
+                    backgroundImage: "url('https://www.juit.ac.in/front/images/banner.jpg')",
+                }}
+            >
+                <div className="absolute inset-0 bg-black opacity-50"></div>
+                <div className="relative container mx-auto text-center">
+                    <h1 className="text-4xl font-bold">Venue Room Booking</h1>
                     <p className="mt-2 text-lg">Find and Book Available Hostel Rooms</p>
                 </div>
             </header>
-
             {/* Main Content */}
             <main className="container mx-auto p-6">
                 <section className="text-center">
